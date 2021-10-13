@@ -54,6 +54,56 @@ func MakeNumbers() [3]int {
 
 func InputNumbers() [3]int {
 	var rst [3]int
+
+	for {
+		fmt.Println("겹치지 않는 0~9 사이의 숫자 3개를 입력하세요.")
+		var no int
+		_, err := fmt.Scanf("%d\n", &no) // scanf 를 통해 값을 입력 받음 \n 를 하여 엔터값까지 입력 받아야함
+		// _ 사용하지 않는 변수 , err 에러를 받음
+		if err != nil { // 에러가 null이 아닌 경우: 에러가 났을 경우
+			fmt.Println("잘못 입력하셨습니다.")
+			continue
+		}
+		success := true
+		idx := 0 // rst에 넣을 변수
+		for no > 0 {
+			n := no % 10 // 숫자를 1자리씩 뽑아냄 123 % 10 = 3
+			no = no / 10 // 남은 120 / 10 을 하면 12가 나옴 12가 다시가서 반복
+
+			duplicated := false // 겹치는지 안겹치는지에 대한 플래그 변수 초기값
+			for j := 0; j < idx; j++ {
+				if rst[j] == n { //숫자가 겹친다면 다시 뽑는다.
+					duplicated = true //겹치면 true
+					break
+				}
+			}
+			if duplicated { //겹치지 않는다면 for문을 빠져 나간다.
+				fmt.Println("숫자가 겹치지 않아야 합니다.")
+				success = false
+				break
+			}
+
+			if idx >= 3 {
+				fmt.Println("3개 보다 많은 숫자를 입력하셨습니다.")
+				success = false
+				break
+			}
+
+			rst[idx] = n // rst[0] 부터 들어가기 때문에 순서가 바껴서 입력됨
+			idx++
+		}
+		if success && idx < 3 { //success가 ture고 3보다 idx가 작을때
+			fmt.Println("3개의 숫자를 입력하세요.")
+			success = false
+		}
+
+		if !success { // 숫자가 겹치면 다시 for 문으로 돌아감
+			continue
+		}
+		break // 숫자를 받았으면 for문을 빠져나온다.
+	}
+	rst[0], rst[2] = rst[2], rst[0] // 순서를 똑바로 돌려줌
+	fmt.Println(rst)
 	return rst
 } // 키보드로 부터 0~9 사이의 겹치지 않는 숮 3개를 입력받아 반환
 
