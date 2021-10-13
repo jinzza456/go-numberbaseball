@@ -6,6 +6,11 @@ import (
 	"time"      //항상 변하는 seed 값을 주기위해 time을 호출
 )
 
+type Result struct { // 스트라이크와 볼의 구조체
+	strikes int
+	balls   int
+}
+
 func main() {
 	rand.Seed(time.Now().UnixNano()) // 랜덤 숫자를 위해 seed값 설정
 	numbers := MakeNumbers()         // 무작위 숫자 3개를 만든다.
@@ -48,7 +53,7 @@ func MakeNumbers() [3]int {
 		}
 	}
 
-	fmt.Println(rst)
+	// fmt.Println(rst)
 	return rst
 } // 0~9 사이의 겹치지 않는 무작위 숫자 3개를 반환
 
@@ -103,18 +108,33 @@ func InputNumbers() [3]int {
 		break // 숫자를 받았으면 for문을 빠져나온다.
 	}
 	rst[0], rst[2] = rst[2], rst[0] // 순서를 똑바로 돌려줌
-	fmt.Println(rst)
+	// fmt.Println(rst)
 	return rst
 } // 키보드로 부터 0~9 사이의 겹치지 않는 숮 3개를 입력받아 반환
 
-func CompareNumbers(numbers, inputNumbers [3]int) bool {
-	return true
+func CompareNumbers(numbers, inputNumbers [3]int) Result { //Result 구조체를 받음
+	strikes := 0
+	balls := 0
+	for i := 0; i < 3; i++ { // 첫번째 숫자를 컴퓨터의 3숫자와 비교하고 나머지도 똑같이
+		for j := 0; j < 3; j++ {
+			if numbers[i] == inputNumbers[j] {
+				if i == j { // numbers와 input이 같으면 스트라이크
+					strikes++
+				} else { // 그 외에 볼
+					balls++
+				}
+				break
+			}
+		}
+	}
+	return Result{strikes, balls} //구조체를 통해 반환
 } // 두개의 숫자 3개를 비교해서 결과를 반환
 
-func PrintResult(result bool) {
-	fmt.Println(result)
+func PrintResult(result Result) {
+	fmt.Printf("%dS%dB\n", result.strikes, result.balls)
 } // 스트라이크 볼 을 판단하는 결과를 반환
 
-func IsGameEnd(result bool) bool {
-	return result
+func IsGameEnd(result Result) bool {
+
+	return result.strikes == 3
 } // 비교 결과가 3스트라이크 인지 확인
